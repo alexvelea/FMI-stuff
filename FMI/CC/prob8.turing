@@ -1,0 +1,45 @@
+name: Move number 4 positions to the right
+init: q0
+accept: ans
+
+q0,1
+qc1,1,>
+
+qc1,3
+ans,3,<
+
+qc1,1
+q00,1,<
+
+qc1,_
+ans,_,<
+
+q00,1
+q1,2,>
+
+q1,1
+q1,1,>
+
+q1,_
+q2,_,<
+
+q1,3
+q2,3,<
+
+q2,1
+q3,3,<
+
+q3,1
+q3,1,<
+
+q3,2
+q00,2,>
+
+q00,3
+qr,3,<
+
+qr,2
+qr,1,<
+
+qr,_
+q0,_,>

@@ -1,0 +1,38 @@
+// Run at https://turingmachinesimulator.com/
+
+name: Move number 4 positions to the right
+init: q0
+accept: q10
+
+q0,1
+q0,1,>
+
+q0,_
+q1,1,>
+
+q1,_
+q2,1,>
+
+q2,_
+q3,1,>
+
+q3,_
+q5,1,<
+
+q5,1
+q5,1,<
+
+q5,_
+q6,_,>
+
+q6,1
+q7,0,>
+
+q7,1
+q8,0,>
+
+q8,1
+q9,0,>
+
+q9,1
+q10,0,-

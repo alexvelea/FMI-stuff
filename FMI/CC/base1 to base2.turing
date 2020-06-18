@@ -1,0 +1,51 @@
+name: name
+init: q1
+accept: finish
+
+// move to qadd
+q1,1,_
+qa1,0,_,-,-
+
+q1,1,0
+qa1,0,0,-,-
+
+q1,1,1
+qa1,0,1,-,-
+
+// finish state
+q1,_,0
+finish,_,0,-,-
+
+q1,_,1
+finish,_,1,-,-
+
+q1,_,_
+finish,_,_,-,-
+
+// start add
+qa1,0,_
+qaf,0,0,-,-
+
+qa1,0,0
+qaf,0,1,-,-
+
+qa1,0,1
+qa1c,0,0,-,>
+
+qa1c,0,1
+qa1c,0,0,-,>
+
+qa1c,0,0
+qaf,0,1,-,<
+
+qa1c,0,_
+qaf,0,1,-,<
+
+qaf,0,1
+qaf,0,1,-,<
+
+qaf,0,0
+qaf,0,0,-,<
+
+qaf,0,_
+q1,0,_,>,>
