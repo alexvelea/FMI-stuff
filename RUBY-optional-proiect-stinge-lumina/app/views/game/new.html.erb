@@ -1,0 +1,54 @@
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/css/bootstrap-multiselect.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/js/bootstrap-multiselect.js"></script>
+
+
+<!-- Initialize the plugin: -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#example-getting-started').multiselect();
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#example-post').multiselect({
+            includeSelectAllOption: false,
+            enableFiltering: true
+        });
+    });
+</script>
+<div style="display:flex">
+<div style="width:auto; flex:2"></div>
+<div style="width:100%; max-width:800px">
+
+  <style>
+    .dropdown-menu {
+      width:350px;
+    }
+    .multiselect-container>li>a>label{margin:0;height:100%;cursor:pointer;font-weight:400;padding:3px 0px 3px 10px;}
+    .multiselect-container>li>a>label>input{margin-right:5px; position: relative; top: -2px;}
+  </style>
+
+<form action='/game' method='POST'>
+  <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+
+  <div class="form-group">
+    <div style="margin-bottom:10px">
+      <button type="submit" class="btn btn-success">Create game</button>
+      <label class="col-sm-2 control-label">Select players</label>
+    </div>
+    <div class="col-sm-10">
+      <select id="example-post" name="user_ids[]" multiple="multiple">
+        <% User.all.each do |user| %>
+          <% if user.id != current_user.id %>
+            <option name="<%=user.id%>" value="<%=user.id%>"><%= user.name %></option>
+          <% end %>
+        <% end %>
+      </select>
+    </div>
+  </div>
+
+
+</form>
+</div>
+  <div style="width:auto; flex:1"></div>
+</div>

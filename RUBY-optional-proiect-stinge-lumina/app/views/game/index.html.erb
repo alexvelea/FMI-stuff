@@ -1,0 +1,8 @@
+<% @games.each do |game| %>
+  <%= game.id %>
+  <%= game.owner_id %>
+  <% game.users.each do |user| %>
+    <%= user.email %>
+  <% end %>
+  <br>
+<% end %>

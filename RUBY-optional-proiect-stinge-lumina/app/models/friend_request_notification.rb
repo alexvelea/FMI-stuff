@@ -1,0 +1,2 @@
+class FriendRequestNotification < BaseNotification
+end

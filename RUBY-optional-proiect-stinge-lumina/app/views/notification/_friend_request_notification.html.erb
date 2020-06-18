@@ -1,0 +1,9 @@
+<%= notification.id %>
+Friend request from <%= notification.user.email %>
+<form method="put" action="/friendship/accept">
+  <input type="hidden" name="user_id" value="<%=notification.friend_id%>"/>
+  <input type="submit" value="Accept friend request"/>
+</form>
+
+<%= link_to 'Delete', notification_path(notification), method: :delete %>
+

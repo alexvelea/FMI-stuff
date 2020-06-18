@@ -1,0 +1,2 @@
+class GameNotification < BaseNotification
+end

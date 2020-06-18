@@ -1,0 +1,22 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="margin-bottom:25px">
+  <div style="width:100%; flex:1; flex-flow: row nowrap; position: relative; display: flex;"></div>
+  <div style="width:100%; max-width:1000px; flex-flow: row nowrap; position: relative; display: flex;">
+    <a class="navbar-brand" href="/">Yahtzee on Rails</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+      </ul>
+
+      <% if signed_in? %>
+        <%= render 'layouts/navbar_logged_in' %>
+      <% else %>
+        <%= render 'layouts/navbar_not_logged_in' %>
+      <% end %>
+    </div>
+  </div>
+  <div style="width:100%; flex:1; flex-flow: row nowrap; position: relative; display: flex;"></div>
+</nav>
