@@ -1,0 +1,5 @@
+A2. (3 puncte) Scrieti un program "sortint" care se va lansa sub forma:
+     sortint   f
+ unde f este un fisier continand reprezentari interne de intregi si sorteaza
+ intregii din acest fisier. Se vor folosi doar functiile de la nivelul 
+ inferior de prelucrare a fisierelor si nu se vor folosi fisiere auxiliare.
