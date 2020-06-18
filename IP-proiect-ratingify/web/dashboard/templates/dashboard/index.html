@@ -1,0 +1,235 @@
+<!doctype html>
+{% load staticfiles %}
+<html>
+  <head>
+    <title>
+      Ratingify Dashboard
+    </title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+    <style>
+
+/*
+ * ALL THE REFERENCE ON dribbble.com
+ * CHECK THE "IP" BUCKET
+ */
+
+body {
+  background: #f5f9fc;
+  font-family: Lato; /* FIX THIS INTO SOMETHING ELSE*/
+  color: #232531;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 80px;
+}
+
+#main {
+  width: 1024px;
+  max-width: 100%;
+}
+
+#search-input {
+  width: 440px;
+  max-width: 100%;
+  height: 50px;
+  font-size: 18px;
+  padding-left: 36px;
+  padding-right: 36px;
+  outline: none;
+  box-shadow: 0 2px 16px -8px rgba(0, 0, 0, .15), 0 13px 27px -5px rgba(50, 50, 93, .09);
+  border: 0;
+  border-radius: 400px;
+  color: #434553;
+  box-sizing: border-box;
+}
+
+#submit-button {
+  margin-top: 24px;
+  font-size: 14px;
+  padding: 12px 24px;
+  outline: none;
+  box-shadow: 0 2px 16px -8px rgba(0, 0, 0, .15), 0 13px 27px -5px rgba(50, 50, 93, .09);
+  border: 0;
+  border-radius: 400px;
+  color: #fff;
+  background: #3fc0e4;
+  transition: .1s;
+  cursor: pointer;
+}
+
+#submit-button:hover {
+  text-shadow: 0px 0px 2px #fff; 
+}
+
+#error-container {
+  font-size: 14px;
+  color: #d00;
+  font-weight: bold;
+  padding-top: 24px;
+  transition: 0.6s;
+}
+#no-matches-found-container {
+  font-size: 14px;
+  color: #d00;
+  font-weight: bold;
+  padding-top: 24px;
+  transition: 0.6s;
+}
+
+#dropdown {
+    width: 440px;
+}
+#list {
+    width: 100%;
+    height: auto !important;
+    border: 0;
+    overflow: hidden;
+    outline: none;
+    margin-top: 12px;
+    box-shadow: 0 2px 16px -8px rgba(0, 0, 0, .15), 0 13px 27px -5px rgba(50, 50, 93, .09);
+    border: 0;
+    border-radius: 25px;
+    color: #434553;
+    display: none;
+}
+#list > option {
+    line-height: 40px;
+    font-size: 20px;
+    padding: 12.5px 36px;
+    border-bottom: 1px solid #f5f9fc;
+    font-size: 16px;
+}
+#list > option:hover {
+    cursor: pointer;
+    opacity: 0.6;
+}
+    </style>
+  </head>
+  <body>
+    <div id='main' style="padding-top: 240px; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+      <img src='{% static "media/LogoRatingify.svg" %}' height=64 style="margin-top: 2px; margin-bottom: 64px"/>
+      <input id='search-input' type='text' placeholder="search for a user"></input>
+      <div id="dropdown">
+        <select name="list" id="list"></select>
+      </div>
+      <div id='submit-button'>
+        SUBMIT 
+      </div>
+      <div id='error-container'>
+        {{ error }}
+      </div>
+    </div>
+    <script>
+      let searchInput = document.getElementById('search-input');
+      let submitButton = document.getElementById('submit-button');
+      let errorContainer = document.getElementById('error-container');
+      searchInput.addEventListener('keydown', (event) => {
+          if (event.keyCode === 13) {
+              submitButton.click();
+          }
+      });
+
+      submitButton.addEventListener('click', () => {
+        window.location = '/dashboard/' + searchInput.value;
+      });
+      var arr = {{ users | safe }};
+        // arr = ["Velea", "tourist", "tarni", "toRRist"];
+
+        let input = searchInput;
+        let optionsVal = document.getElementById('list');
+        optionsVal.style.display = 'none';
+
+        input.addEventListener('keyup', show);
+        optionsVal.onclick = function () {
+            setVal(this);
+        };
+
+        //Use this function to replace potential characters that could break the regex
+        RegExp.escape = function (s) {
+            return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        };
+        //shows the list
+        function show() {
+            let dropdown = document.getElementById('dropdown');
+            dropdown.style.display = 'none';
+
+            optionsVal.style.display = 'initial';
+            optionsVal.options.length = 0;
+
+            if (input.value) {
+                dropdown.style.display = 'block';
+                optionsVal.size = 3;
+                let textCountry = input.value;
+                let drop_down_size = 0;
+
+                for (let i = 0; i < arr.length; i++) {
+                    let testableRegExp = new RegExp(RegExp.escape(textCountry), "i");
+                    if (drop_down_size < 5 && arr[i].match(testableRegExp)) {
+                        addValue(arr[i], arr[i]);
+                        drop_down_size += 1;
+                    }
+                }
+
+                removeNoMatchesFound();
+                if (drop_down_size === 0) {
+                    addNoMatchesFound();
+                    optionsVal.style.display = 'none';
+                    return;
+                }
+
+                let size = dropdown.children[0].children;
+                if (size.length > 0)
+                {
+                   let defaultSize = 16;
+                   if (size.length < 10)
+                   {
+                      defaultSize *= size.length;
+                   }
+                   else
+                   {
+                      defaultSize *= 10;
+                   }
+                   dropdown.children[0].style.height = defaultSize + "px";
+                } 
+            }
+        }
+
+        function removeNoMatchesFound() {
+            let element = document.getElementById('no-matches-found-container');
+            if (element) {
+                dropdown.removeChild(element);
+            }
+        }
+
+        function addNoMatchesFound() {
+            let container = document.createElement('div');
+            container.id = 'no-matches-found-container';
+            container.innerHTML = 'No matches found'
+            dropdown.appendChild(container);
+        }
+
+        function addValue(text, val) {
+            let createOptions = document.createElement('option');
+            optionsVal.appendChild(createOptions);
+            createOptions.text = text;
+            createOptions.value = val;
+        }
+
+        //Setting the value in the box by firing the click event
+        function setVal(selectedVal) {
+            input.value = selectedVal.value;
+            document.getElementById('dropdown').style.display = 'none';
+        }
+
+      setTimeout(() => {
+        errorContainer.style.opacity = 0;
+        setTimeout(() => {
+          errorContainer.innerHTML = '';
+        }, 1000);
+      }, 4000);
+    </script>
+  </body>
+</html>

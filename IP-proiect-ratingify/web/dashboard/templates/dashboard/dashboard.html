@@ -1,0 +1,356 @@
+<!doctype html>
+{% load staticfiles %}
+<html>
+  <head>
+    <title>
+      Ratingify Dashboard
+    </title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+    <style>
+/*
+ * ALL THE REFERENCE ON dribbble.com
+ * CHECK THE "IP" BUCKET
+ */
+
+body {
+  background: #f5f9fc;
+  font-family: Lato; /* FIX THIS INTO SOMETHING ELSE*/
+  color: #232531;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 80px;
+}
+
+#main {
+  width: 1024px;
+  max-width: 100%;
+}
+
+nav {
+  width: 100%;
+  height: 100px;
+  padding-left: 32px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-container {
+  display: flex;
+  font-size: 15px;
+  color: #232533;
+  font-weight: bold;
+}
+
+.nav-container-item {
+  padding: 0 32px;
+  cursor: pointer;
+}
+
+.card {
+  padding: 32px;
+  box-shadow: 0 2px 16px -8px rgba(0, 0, 0, .15), 0 13px 27px -5px rgba(50, 50, 93, .09);
+  background: #fff;
+  border-radius: 6px;
+}
+
+.card-title {
+  font-size: 13px;
+  color: #001C6D;
+  font-weight: bold;
+}
+
+table.last-solved {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+table.last-solved tr td {
+  text-align: center;
+  padding: 0;
+  padding-top: 8px;
+  padding-bottom: 12px;
+  font-size: 13px;
+  color: #434553;
+}
+table.last-solved tr th {
+  padding: 0;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: #98adbd;
+  padding-top: 32px;
+  padding-bottom: 16px;
+}
+table.last-solved tr td:nth-child(1) {
+  text-align: left;
+  font-weight: bold;
+}
+table.last-solved tr th:nth-child(1) {
+  text-align: left;
+}
+table.last-solved tr th:nth-child(1) {
+  width: 168px;
+  max-width: 168px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+table.last-solved tr td:nth-child(1) {
+  width: 168px;
+  max-width: 168px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  padding-right: 16px;
+}
+table.last-solved tr td:nth-child(3) {
+  font-weight: bold;
+}
+table.last-solved tr td:nth-child(5) {
+  font-weight: bold;
+}
+table.last-solved tr td:nth-child(4) {
+  font-weight: bold;
+  color: #75aace;
+}
+table.last-solved tr td:nth-child(2) {
+}
+
+.two-card-row-container {
+  display: flex;
+}
+
+.two-card-row-container > div {
+  flex: 1;
+}
+.two-card-row-container > div:nth-child(1) {
+  flex: 1;
+  margin-right: 24px;
+}
+.two-card-row-container > div:nth-child(2) {
+  flex: 1.8;
+  margin-left: 24px;
+}
+
+
+.two-card-row-container-tables {
+  display: flex;
+}
+
+.two-card-row-container-tables > div {
+  flex: 1;
+}
+.two-card-row-container-tables > div:nth-child(1) {
+  flex: 1;
+  margin-right: 24px;
+}
+.two-card-row-container-tables > div:nth-child(2) {
+  flex: 1;
+  margin-left: 24px;
+}
+
+table.last-solved-extra tr th:nth-child(1) {
+  width: auto;
+  max-width: auto;
+}
+table.last-solved tr td:nth-child(1) {
+  width: auto;
+  max-width: auto;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+    </style>
+  </head>
+  <body>
+    <div id="main">
+      <nav>
+        <div class="nav-container">
+          <!-- <span style="color: #001C5D">Rating</span><span style="color: #3EC0E4">ify</span><span style="color: #232527">.</span> -->
+          <a href='/' class="logo-container">
+            <img src='{% static "media/LogoRatingify.svg" %}' height=32 style="margin-top: 2px"/>
+            <div style="margin-left: 12px">
+              Problem Planning Tool
+            </div>
+          </a>
+        </div>
+        <div class="nav-container">
+          <div class="nav-container-item">
+            {{ username }} ({{ rating }})
+          </div>
+        </div>
+      </nav>
+      <div class="two-card-row-container">
+        <div class="card">
+          <div class="card-title" style="padding-bottom: 24px">
+            STATS
+          </div>
+          <canvas id="stats-content" width="100%" height="100%"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-title" style="padding-bottom: 24px">
+            SOLVED IN PAST DAYS
+          </div>
+          <canvas id="solved-past-days-content" height="165%"></canvas>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 48px">
+        <div class="card-title">
+          RECOMMENDED PROBLEMS
+        </div>
+        <table class="last-solved">
+          <tr>
+            <th>Name</th>
+            <th>Date added</th>
+            <th>Difficulty</th>
+            <th>Percentage solved</th>
+            <th>Popularity</th>
+          </tr>
+          {% for item in recommendedProblems %}
+          <tr>
+            <td><a href="{{ item.url }}">{{ item.name }}</a></td>
+            <td>{{ item.dateSolved }}</td>
+            <td>{{ item.difficulty }}</td>
+            <td>{{ item.percentageSolved }}</td>
+            <td>{{ item.popularity }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+      <div class="two-card-row-container-tables">
+        <div class="card" style="margin-top: 48px;">
+          <div class="card-title">
+            LAST SOLVED PROBLEMS
+          </div>
+          <table class="last-solved">
+            <tr>
+              <th>Name</th>
+              <th>Solved Time</th>
+              <th>Difficulty</th>
+            </tr>
+            {% for item in lastSolvedProblems %}
+            <tr>
+              <td><a href="{{ item.url }}">{{ item.name }}</a></td>
+              <td>{{ item.dateSolved }}</td>
+              <td>{{ item.difficulty }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+        <div class="card" style="margin-top: 48px;">
+          <div class="card-title">
+            PREVIOUS CONTESTS
+          </div>
+          <table class="last-solved">
+            <tr>
+              <th>Name</th>
+              <th>Rank</th>
+              <th>Solved</th>
+            </tr>
+            {% for item in previousContests %}
+            <tr>
+              <td><a href="{{ item.url }}">{{ item.name }}</a></td>
+              <td>{{ item.rank }}/{{ item.participantsCount }}</td>
+              <td>{{ item.problemsSolved }}/{{ item.problemsCount }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+    </div>
+    <script>
+function renderRadarChart() {
+  let stats = {{ stats|safe }};
+  let data = stats.data;
+  let labels =  stats.labels;
+  let ctx = document.getElementById("stats-content").getContext('2d');
+  let myRadarChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Score',
+        fill: true,
+        backgroundColor: "rgba(63,192,228,0.2)",
+        borderColor: "rgba(63,192,228,1)",
+        pointBorderColor: "#fff",
+        pointBackgroundColor: "rgba(63,192,228,1)",
+        pointBorderColor: "#fff",
+        data: data
+      }]
+    },
+    options: {
+      legend: {
+        display: false
+      },
+      scale: {
+        ticks: {
+          maxTicksLimit: 4,
+          display: false,
+          min: 0,
+          max: 10,
+        }
+      },
+    }
+  });
+}
+
+function renderFrequencyChart() {
+  let solvedInPastDays = {{ solvedInPastDays|safe }};
+  let data = solvedInPastDays.data;
+  let labels = solvedInPastDays.labels;
+  let ctx = document.getElementById("solved-past-days-content").getContext('2d');
+  let myRadarChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Problems solved',
+        backgroundColor: "rgba(63,192,228,0.2)",
+        borderColor: "rgba(63,192,228,1)",
+        // pointBorderColor: "#fff",
+        // pointBackgroundColor: "rgba(63,192,228,1)",
+        pointBorderColor: "#fff",
+        data: data
+      }]
+    },
+    options: {
+      legend: {
+        display: false
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero:true,
+            min: 0,
+            max: 10,
+          }
+        }]
+      }
+    },
+  });
+}
+
+renderRadarChart();
+renderFrequencyChart();
+    </script>
+  </body>
+</html>
+
